@@ -13,10 +13,12 @@ data_file = 'atbackup.dat'
 config_directory = 'test'
 
 try:
+    # Open & Read Data File (atbackup.dat)
     with open(data_file) as file:
         csv_reader = reader(file)
         next(csv_reader)
 
+        # Read Device Details From Data File
         for device_data in csv_reader:
             ip_address = device_data[0]
             hostname = device_data[1]
@@ -25,36 +27,38 @@ try:
             login_password = device_data[4]
 
             try:
-                # Connect To Device via HTTP
+                # Connect To Target Device via HTTP
                 response = requests.get(
                     'http://{}/{}/{}'.format(
                         ip_address, config_directory, config_file), auth=(
                         login_name, login_password))
 
-                # Device Connectivity Established (Status Code 200)
+                # Target Device Connectivity Established (Status Code 200)
                 if response.status_code == requests.codes.ok:
+                    # Copy & Save Configuration File to /cfg Directory
                     with open('cfg/{}-{}.cfg'.format(hostname, current_date), 'w', newline='') as file:
                         file.write(response.text)
 
+                    # Write To Log File: Target Device Configuration File Backup Successful
                     with open('log/backup_success-{}.log'.format(current_date), 'a', newline='') as file:
                         file.write(
                             '{} {} ({}) successfully backup {} file.\n'.format(
                                 current_time, hostname, ip_address, config_file))
 
-                # Active Configuration File Not Found (Status Code 404)
+                # Write To Log File: Active Configuration File Not Found (Status Code 404)
                 elif response.status_code == 404:
                     with open('log/backup_fail-{}.log'.format(current_date), 'a', newline='') as file:
                         file.write(
                             '{} {} ({}) {} inaccessible.\n'.format(
                                 current_time, hostname, ip_address, config_file))
 
-            # Write To Log File: Device Unreachable
+            # Write To Log File: Target Device Unreachable
             except BaseException:
                 with open('log/backup_fail-{}.log'.format(current_date), 'a', newline='') as file:
                     file.write('{} {} ({}) device unreachable. \n'.format(
                         current_time, hostname, ip_address, config_file))
 
-# Write To Log File: Active Configuration File Not Found
+# Write To Log File: Data File (atbackup.date) Missing
 except FileNotFoundError:
     with open('log/system-{}.log'.format(current_date), 'a', newline='') as file:
         file.write(

@@ -1,0 +1,5 @@
+ipaddr,hostname,config_file,login,password
+127.0.0.1,apple,apple.cfg,root,password123456789
+127.0.0.1,banana,banana.cfg,root,password123456789
+127.0.0.1,coconut,coconut.cfg,root,password1234567890
+192.168.1.12,dates,dates.cfg,root,password1234567890

@@ -9,7 +9,7 @@ current_time = datetime.now().strftime("%H:%M:%S")
 # File containing the list of devices & corresponding configuration files
 data_file = 'atbackup.dat'
 
-# Directory name where to save devices' individual configuration file
+# Directory where the active configuration file of each device is saved
 config_directory = 'config'
 
 try:
@@ -58,7 +58,7 @@ try:
                     file.write('{} {} ({}) device unreachable. \n'.format(
                         current_time, hostname, ip_address, config_file))
 
-# log: Data file (atbackup.date) is missing
+# Log: Data file (atbackup.date) is missing
 except FileNotFoundError:
     with open('log/system-{}.log'.format(current_date), 'a', newline='') as file:
         file.write(

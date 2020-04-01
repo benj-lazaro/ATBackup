@@ -6,19 +6,19 @@ import requests
 current_date = datetime.now().strftime("%Y%m%d")
 current_time = datetime.now().strftime("%H:%M:%S")
 
-# Filename of CSV-format File (.csv or .dat filename extension)
+# File containing the list of devices & corresponding configuration files
 data_file = 'atbackup.dat'
 
-# Directory Name
-config_directory = 'test'
+# Directory name where to save device's configuration file
+config_directory = 'config'
 
 try:
-    # Open & Read Data File (atbackup.dat)
+    # Open and read contents of the data file
     with open(data_file) as file:
         csv_reader = reader(file)
         next(csv_reader)
 
-        # Read Device Details From Data File
+        # Read device details per line
         for device_data in csv_reader:
             ip_address = device_data[0]
             hostname = device_data[1]
@@ -27,38 +27,38 @@ try:
             login_password = device_data[4]
 
             try:
-                # Connect To Target Device via HTTP
+                # Connect to target device
                 response = requests.get(
                     'http://{}/{}/{}'.format(
                         ip_address, config_directory, config_file), auth=(
                         login_name, login_password))
 
-                # Target Device Connectivity Established (Status Code 200)
+                # Target device successfully connected
                 if response.status_code == requests.codes.ok:
                     # Copy & Save Configuration File to /cfg Directory
                     with open('cfg/{}-{}.cfg'.format(hostname, current_date), 'w', newline='') as file:
                         file.write(response.text)
 
-                    # Write To Log File: Target Device Configuration File Backup Successful
+                    # Log: Target device's configuration file successfully backed up
                     with open('log/backup_success-{}.log'.format(current_date), 'a', newline='') as file:
                         file.write(
                             '{} {} ({}) successfully backup {} file.\n'.format(
                                 current_time, hostname, ip_address, config_file))
 
-                # Write To Log File: Active Configuration File Not Found (Status Code 404)
+                # Log: Target device's configuration file not found
                 elif response.status_code == 404:
                     with open('log/backup_fail-{}.log'.format(current_date), 'a', newline='') as file:
                         file.write(
                             '{} {} ({}) {} inaccessible.\n'.format(
                                 current_time, hostname, ip_address, config_file))
 
-            # Write To Log File: Target Device Unreachable
+            # Log: Target device unreachable
             except BaseException:
                 with open('log/backup_fail-{}.log'.format(current_date), 'a', newline='') as file:
                     file.write('{} {} ({}) device unreachable. \n'.format(
                         current_time, hostname, ip_address, config_file))
 
-# Write To Log File: Data File (atbackup.date) Missing
+# log: Data file (atbackup.date) is missing
 except FileNotFoundError:
     with open('log/system-{}.log'.format(current_date), 'a', newline='') as file:
         file.write(

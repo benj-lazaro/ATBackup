@@ -1,5 +1,5 @@
 ATBackup v0.1
 
-Rudimentary CLI backup tool for the configuration file of Allied Telesis 9924 series Layer 3 switch via HTTP protocol.
+A rundimentary CLI-based tool for backing up the current configuration file of an Allied Telesis 9924 series Layer 3 switch.
 
-Written in Python 3 and Requests module
+Written in Python 3 with datetime, reader & requests modules.

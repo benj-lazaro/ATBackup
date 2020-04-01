@@ -27,7 +27,7 @@ try:
             login_password = device_data[4]
 
             try:
-                # Connect to target device
+                # Connect to target device via HTTP
                 response = requests.get(
                     'http://{}/{}/{}'.format(
                         ip_address, config_directory, config_file), auth=(

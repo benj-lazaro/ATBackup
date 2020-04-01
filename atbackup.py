@@ -9,7 +9,7 @@ current_time = datetime.now().strftime("%H:%M:%S")
 # File containing the list of devices & corresponding configuration files
 data_file = 'atbackup.dat'
 
-# Directory name where to save device's configuration file
+# Directory name where to save devices' individual configuration file
 config_directory = 'config'
 
 try:
